@@ -7,12 +7,27 @@ chrome.storage.sync.get('color', (data) => {
 });
 
 /* when click we change color based on its value (we passed above) */
-changeColor.onclick =  (element) => {
+changeColor.onclick = (element) => {
   let color = element.target.value;
-
-  chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+  // const codeBlock = 'document.body.style.backgroundColor = "' + color + '";'
+  // const codeBlock = `document.body.style.backgroundColor = ${color}`
+  chrome.tabs.query({
+    active: true,
+    currentWindow: true
+  }, (tabs) => {
     chrome.tabs.executeScript(
-        tabs[0].id,
-        {code: 'document.body.style.backgroundColor = "' + color + '";'});
+      tabs[0].id, {
+        file: 'contentScript.js'
+      });
   });
+
+  chrome.tabs.query({
+    active: true,
+    lastFocusedWindow: true
+  }, function (tabs) {
+    console.log(tabs[0].url);
+    console.log(tabs[0].title);
+  });
+
+
 };
